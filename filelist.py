@@ -1,27 +1,28 @@
-import os
-from PySide6.QtCore import QDir
+from PySide6.QtCore import QDir, QFile
 
 class FileList:
     files = []
 
     def addFile(self, directory):
-        assert os.path.exists(directory) and directory.isDir(), f"Directory '{directory.path()}' does not exist or is not a directory."
-        for filename in directory.entryList():
-            filepath = directory.filePath(filename)
-            if os.path.isfile(filepath):
+        assert QDir(directory).exists() and QDir(directory).isDir(), f"Directory '{directory}' does not exist or is not a directory."
+        dir_obj = QDir(directory)
+        for filename in dir_obj.entryList():
+            filepath = dir_obj.filePath(filename)
+            if QFile(filepath).isFile():
                 self.files.append(filepath)
 
     def addFolder(self, directory, recursive=False):
-        assert directory.exists() and directory.isDir(), f"Directory '{directory.path()}' does not exist or is not a directory."
+        assert QDir(directory).exists() and QDir(directory).isDir(), f"Directory '{directory}' does not exist or is not a directory."
+        dir_obj = QDir(directory)
         if recursive:
-            for root, dirs, files in os.walk(directory.path()):
+            for root, dirs, files in dir_obj.walk():
                 for file in files:
-                    filepath = os.path.join(root, file)
+                    filepath = dir_obj.filePath(file)
                     self.files.append(filepath)
         else:
-            for filename in directory.entryList():
-                filepath = directory.filePath(filename)
-                if os.path.isfile(filepath):
+            for filename in dir_obj.entryList():
+                filepath = dir_obj.filePath(filename)
+                if QFile(filepath).isFile():
                     self.files.append(filepath)
 
     def printFiles(self):
