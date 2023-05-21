@@ -1,10 +1,2 @@
-# UI
-pyside6==6.5.0
-
-# Loading and saving audio and tag data
-pydub==0.25.1
-music-tag==0.4.3
-
-# Audio processing
-pyloudnorm==0.1.1
-numpy==1.24.3
+PySide6==6.2.3
+numpy==1.20.2
