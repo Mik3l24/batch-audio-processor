@@ -14,8 +14,6 @@ class FileInfo:
         print("Measuring loudness...")
 
     def export(self, export_params):
-        if isinstance(export_params, ExportParameters):
-            # Implementacja funkcji export
-            print(f"Exporting file with parameters: {export_params}")
-        else:
-            print("Invalid input. Expected object of type ExportParameters.")
+        assert isinstance(export_params, ExportParameters), "Invalid input. Expected object of type ExportParameters."
+        # Implementacja funkcji export
+        print(f"Exporting file with parameters: {export_params}")
