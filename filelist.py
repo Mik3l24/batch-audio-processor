@@ -1,33 +1,27 @@
 import os
-from PySide6.QtCore import QDir
+from PySide6.QtCore import QObject, QDir
+from PySide6.QtWidgets import QWidget
+from fileinfo import FileInfo, FileInfoWidget
 
-class FileList:
-    files = []
 
-    def addFile(self, directory):
-        if directory.exists() and directory.isDir():
-            for filename in directory.entryList():
-                filepath = directory.filePath(filename)
-                if os.path.isfile(filepath):
-                    self.files.append(filepath)
-        else:
-            print(f"Directory '{directory.path()}' does not exist or is not a directory.")
+class FileList(QObject):
+    files: list[FileInfoWidget] = []
 
-    def addFolder(self, directory, recursive=False):
-        if directory.exists() and directory.isDir():
-            if recursive:
-                for root, dirs, files in os.walk(directory.path()):
-                    for file in files:
-                        filepath = os.path.join(root, file)
-                        self.files.append(filepath)
-            else:
-                for filename in directory.entryList():
-                    filepath = directory.filePath(filename)
-                    if os.path.isfile(filepath):
-                        self.files.append(filepath)
-        else:
-            print(f"Directory '{directory.path()}' does not exist or is not a directory.")
+    def addFile(self, directory: QDir):
+        pass
+
+    def addFolder(self, directory: QDir, recursive=False):
+        pass
 
     def printFiles(self):
         for file in self.files:
-            print(file)
+            print(file.file_info)
+
+
+class FileListWidget(QWidget):
+    file_list: FileList
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.file_list = FileList(self)
+
