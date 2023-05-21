@@ -1,4 +1,7 @@
+from PySide6.QtWidgets import QMainWindow
 
 
-class App:
-    pass
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        #self.setCentralWidget()
