@@ -6,8 +6,8 @@ from export_params import ExportParameters
 
 
 class FileInfo(QObject):
-    absolute_path: QDir
-    relative_path: QDir
+    absolute_path = ""
+    relative_path = ""
     original_tags: FileTags
     desired_tags: FileTags
     loudness: Optional[float]
@@ -31,7 +31,7 @@ class FileInfoWidget(QWidget):
     file_info: FileInfo
     selected: bool
 
-    def __init__(self, parent, absolute_path: QDir, relative_path):
+    def __init__(self, parent, absolute_path, relative_path):
         super().__init__(parent)  # Parent is the FileListWidget or its layout
         self.file_info = FileInfo(self, absolute_path, relative_path)
 
