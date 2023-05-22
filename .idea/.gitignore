@@ -86,4 +86,5 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 # Interpreter changes between machines, so misc.xml needs to be ignored
+.idea/misc.xml
 /misc.xml
