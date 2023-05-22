@@ -4,8 +4,17 @@ from pathlib import PurePath
 from filelist import FileList
 
 
+# from PySide6.QtWidgets import QMainWindow
+#
+#
+# class MainWindow(QMainWindow):
+#     def __init__(self):
+#         super().__init__()
+#         #self.setCentralWidget()
+
+
 class App(QtWidgets.QWidget):
-    def __init__(self):
+    def __init__(self, bw, flw, fl, tw, pw):
         super().__init__()
         # Setup.
         self.main_layout = QtWidgets.QVBoxLayout(self)
@@ -14,17 +23,39 @@ class App(QtWidgets.QWidget):
         self.row2_layout = QtWidgets.QHBoxLayout(self)
         self.row3_layout = QtWidgets.QHBoxLayout(self)
 
+        # Main layout.
+        self.row1_layout.addWidget(bw.button_group)
+        self.row2_layout.addWidget(flw.filelist)
+        self.row2_layout.addWidget(tw.tags)
+        self.row3_layout.addWidget(pw.params)
+
+        self.main_layout.addLayout(self.row1_layout)
+        self.main_layout.addLayout(self.row2_layout)
+        self.main_layout.addLayout(self.row3_layout)
+        self.main_layout.layout().addStretch()
+
+    # def list_add(self, flist):
+    #     for file in flist:
+    #         self.filelist_layout.addWidget(self.make_widget(file))
+    #         self.filelist.setLayout(self.filelist_layout)
+    #
+    # def make_widget(self, file):
+    #     filename = PurePath(file).name
+    #     filepath = file
+    #     filespath = PurePath(file).parent.parts[-1]
+    #     loudness = 'loudness: -12'
+    #     fileinfo = filename + '\n' + filepath + '\n' + filespath + '\n' + loudness
+    #     file_text = QtWidgets.QLabel(fileinfo, alignment=QtCore.Qt.AlignLeft)
+    #     # file_text.mousePressEvent()
+    #     return file_text
+
+
+class ButtonsWidget(QtWidgets.QWidget):
+    def __init__(self, fl):
+        super().__init__()
         self.buttons_layout = QtWidgets.QHBoxLayout(self)
-        self.filelist_layout = QtWidgets.QVBoxLayout(self)
-        self.tags_layout = QtWidgets.QVBoxLayout(self)
-        self.params_layout = QtWidgets.QVBoxLayout(self)
-
         self.button_group = QtWidgets.QGroupBox()
-        self.filelist = QtWidgets.QGroupBox()
-        self.tags = QtWidgets.QGroupBox()
-        self.params = QtWidgets.QGroupBox()
 
-        # Buttons.
         self.button_open = QtWidgets.QPushButton('Otwórz plik')
         self.button_open_f = QtWidgets.QPushButton('Otwórz folder')
         self.button_delete = QtWidgets.QPushButton('Usuń zaznaczone z listy')
@@ -43,8 +74,24 @@ class App(QtWidgets.QWidget):
 
         self.button_group.setLayout(self.buttons_layout)
 
-        # File list.
-        fl = FileList()
+        self.button_open.clicked.connect(lambda: self.open_file(fl))
+        self.button_open_f.clicked.connect(lambda: self.open_folder(fl))
+
+    def open_file(self, flist):
+        filename = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file',
+                                                         '', 'Sound Files (*.wav *.ogg *.mp3 *.m4a)')
+        flist.addFile(QtCore.QDir(filename[0]))
+
+    def open_folder(self, flist):
+        folder = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Directory')
+        flist.addFolder(QtCore.QDir(folder[0]))
+
+
+class FileListWidget(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+        self.filelist_layout = QtWidgets.QVBoxLayout(self)
+        self.filelist = QtWidgets.QGroupBox()
 
         self.filelist_label = QtWidgets.QLabel('Lista plików', alignment=QtCore.Qt.AlignTop)
 
@@ -52,10 +99,12 @@ class App(QtWidgets.QWidget):
 
         self.filelist.setLayout(self.filelist_layout)
 
-        self.button_open.clicked.connect(lambda: self.open_file(fl))
-        self.button_open_f.clicked.connect(lambda: self.open_folder(fl))
 
-        # tg
+class FileTagsWidget(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+        self.tags_layout = QtWidgets.QVBoxLayout(self)
+        self.tags = QtWidgets.QGroupBox()
 
         self.intags_layout1 = QtWidgets.QHBoxLayout(self)
         self.intags_layout2 = QtWidgets.QHBoxLayout(self)
@@ -100,7 +149,12 @@ class App(QtWidgets.QWidget):
 
         self.tags.setLayout(self.tags_layout)
 
-        # prms
+
+class ParamsWidget(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+        self.params_layout = QtWidgets.QVBoxLayout(self)
+        self.params = QtWidgets.QGroupBox()
 
         self.params_label = QtWidgets.QLabel('Parametry eksportu', alignment=QtCore.Qt.AlignHCenter)
 
@@ -158,47 +212,17 @@ class App(QtWidgets.QWidget):
 
         self.params.setLayout(self.params_layout)
 
-        # ml
-
-        self.row1_layout.addWidget(self.button_group)
-        self.row2_layout.addWidget(self.filelist)
-        self.row2_layout.addWidget(self.tags)
-        self.row3_layout.addWidget(self.params)
-
-        self.main_layout.addLayout(self.row1_layout)
-        self.main_layout.addLayout(self.row2_layout)
-        self.main_layout.addLayout(self.row3_layout)
-        self.main_layout.layout().addStretch()
-
-    def open_file(self, flist):
-        filename = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file',
-                                                         '', 'Sound Files (*.wav *.ogg *.mp3 *.m4a)')
-        flist.addFile(QtCore.QDir(filename[0]))
-
-    def open_folder(self, flist):
-        folder = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Directory')
-        flist.addFolder(QtCore.QDir(folder[0]))
-
-    def list_add(self, flist):
-        for file in flist:
-            self.filelist_layout.addWidget(self.make_widget(file))
-            self.filelist.setLayout(self.filelist_layout)
-
-    def make_widget(self, file):
-        filename = PurePath(file).name
-        filepath = file
-        filespath = PurePath(file).parent.parts[-1]
-        loudness = 'loudness: -12'
-        fileinfo = filename + '\n' + filepath + '\n' + filespath + '\n' + loudness
-        file_text = QtWidgets.QLabel(fileinfo, alignment=QtCore.Qt.AlignLeft)
-        # file_text.mousePressEvent()
-        return file_text
-
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
 
-    widget = App()
+    filelist = FileList()
+    buttons_widget = ButtonsWidget(filelist)
+    filelist_widget = FileListWidget()
+    tags_widget = FileTagsWidget()
+    params_widget = ParamsWidget()
+
+    widget = App(buttons_widget, filelist_widget, filelist, tags_widget, params_widget)
     widget.resize(800, 600)
     widget.show()
 
