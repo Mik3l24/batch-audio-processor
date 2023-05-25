@@ -13,14 +13,17 @@ class FileInfo(QObject):
     file_info: QFileInfo
     original_tags: FileTags
     desired_tags: FileTags
-    loudness: Optional[float]
+    loudness: Optional[float] = None
 
     def __init__(self, parent: "FileInfoWidget", absolute_path, relative_path):
         super().__init__(parent)
         self.absolute_path = absolute_path
         self.relative_path = relative_path
         self.file_info = QFileInfo(absolute_path)
-        assert self.file_info.isFile() and self.file_info.completeSuffix() in valid_extensions.keys()
+        assert self.file_info.isFile() and self.file_info.completeSuffix() in valid_extensions
+        self.original_tags = FileTags(tag.load_file(self.absolute_path))
+        self.desired_tags = FileTags(tag.load_file(self.absolute_path))
+
 
     def measureLoudness(self):
         # Implementacja funkcji measureLoudness
@@ -41,7 +44,7 @@ class FileInfoWidget(QWidget):
         self.file_info = FileInfo(self, absolute_path, relative_path)
 
         self.path_label = QLabel("cool")
-        self.loudness_label = QLabel
+        self.loudness_label = QLabel("")
 
         self.vlayout = QVBoxLayout(self)
 
@@ -51,5 +54,9 @@ class FileInfoWidget(QWidget):
         self.updateLabels()
 
     def updateLabels(self):
-        self.path_label.setText(self.file_info.absolute_path.absolutePath())
-        self.loudness_label.setText(f"{self.file_info.loudness}")
+        self.path_label.setText(self.file_info.absolute_path)
+        if self.file_info.loudness is None:
+            self.loudness_label.setText(f"Not measured")
+        else:
+            self.loudness_label.setText(f"{self.file_info.loudness} LUFS")
+
