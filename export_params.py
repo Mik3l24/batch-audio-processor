@@ -10,6 +10,13 @@ class DirOrg(Enum):
     TAGWISE = 3
 
 
+valid_extensions = [
+    "mp3",
+    "wav",
+    "ogg",
+]
+
+
 class Encoders:
     class Encoder:
         pass
