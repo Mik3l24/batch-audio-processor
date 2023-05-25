@@ -1,5 +1,5 @@
 import os
-from PySide6.QtCore import QObject, QDir, QFile
+from PySide6.QtCore import QObject, QDir, QFileInfo
 from PySide6.QtWidgets import QWidget, QVBoxLayout
 from fileinfo import FileInfo, FileInfoWidget
 
@@ -21,14 +21,14 @@ class FileListWidget(QWidget):
     file_list: FileList
 
     def _addFileWidget(self, filepath, relative=""):
-        widget = self.file_list.addFile(filepath, relative)
-        self.widgets.addWidget(widget)
+        if QFileInfo(filepath).isFile():
+            widget = self.file_list.addFile(filepath, relative)
+            self.widgets.addWidget(widget)
 
     def addFile(self, directory: QDir):
         for filename in directory.entryList():
             filepath = directory.filePath(filename)
-            if QFile(filepath).isFile():
-                self._addFileWidget(filepath)
+            self._addFileWidget(filepath)
 
     def addFolder(self, directory: QDir, recursive=False):
         if recursive:
@@ -39,8 +39,7 @@ class FileListWidget(QWidget):
         else:
             for filename in directory.entryList():
                 filepath = directory.filePath(filename)
-                if QFile(filepath).isFile():
-                    self._addFileWidget(filepath, "")
+                self._addFileWidget(filepath, "")
 
     def __init__(self, parent):
         super().__init__(parent)
