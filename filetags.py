@@ -35,3 +35,5 @@ class FileTags:
                 self.tags[tag] = None
             else:
                 self.tags[tag] = tag_source[tag].value
+
+

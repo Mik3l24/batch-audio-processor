@@ -1,11 +1,14 @@
+import sys
+
 from app import MainWindow
 from PySide6.QtWidgets import QApplication
 
 if __name__ == "__main__":
-    print("placeholderowy main")
-    # Run app
     app = QApplication()
+
     window = MainWindow()
+    window.resize(800, 600)
     window.show()
-    app.exec()
+
+    sys.exit(app.exec())
 
