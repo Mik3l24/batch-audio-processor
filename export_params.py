@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional
 
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtCore import QObject, QDir
@@ -21,13 +22,16 @@ valid_extensions = [
 
 class Encoders:
     class Encoder:
+        extension = ""
         pass
 
     class MP3(Encoder):
         bitrate = 320
+        extension = "mp3"
 
     class WAV(Encoder):
         bit_depth = 16
+        extension = "wav"
 
 
 _available_encoders = {
@@ -37,10 +41,13 @@ _available_encoders = {
 
 
 class ExportParameters(QObject):
-    destination: QDir
+    destination: str = QDir.homePath()
     organisation: DirOrg = DirOrg.SIMPLE
     tag_pattern: str = ""
     encoder: Encoders.Encoder
+    target_loudness: Optional[float] = None
+    normalize_loudness: bool = True
+    cut_silence: bool = False
 
     def __init__(self, parent):
         super().__init__(parent)
