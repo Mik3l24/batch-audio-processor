@@ -240,3 +240,6 @@ fabric.properties
 # Interpreter changes between machines, so misc.xml needs to be ignored
 .idea/misc.xml
 /.idea/misc.xml
+
+/tests/audio-src/
+/tests/audio-dest/
