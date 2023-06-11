@@ -1,5 +1,6 @@
 import io
 from typing import Optional
+from pathlib import Path
 
 import scipy
 from PySide6.QtCore import QObject, QDir, QFileInfo, SLOT
@@ -81,6 +82,10 @@ class FileInfo(QObject):
         self.arrayToSegment()
 
     def cutSilence(self):
+        """
+        It's a bit too slow on longer files.
+        :return:
+        """
         self.loadAudioSegment()
         audio_chunks = split_on_silence(
             self._audio_segment,
@@ -114,7 +119,7 @@ class FileInfo(QObject):
 
         # Get export filename
         #   We forgot to add options for naming the file, so we'll just use the original filename
-        filename = self.file_info.fileName()
+        filename = self.file_info.completeBaseName()
         if QFileInfo(dir + QDir.separator() + filename).exists():
             # If the file already exists, we'll just add a number to the end
             i = 1
@@ -125,10 +130,15 @@ class FileInfo(QObject):
             filename = temp_name
         dir += QDir.separator() + filename + "." + self.extension
 
+        # Create the file
+        path = Path(dir)
+        path.parent.mkdir(parents=True, exist_ok=True)  # mkdir without parent would create a folder named as the file
+        path.touch(exist_ok=True)
+
         # Get export format
         match params.encoder:
             case Encoders.MP3():
-                self._audio_segment.export(dir, format="mp3", bitrate=params.encoder.bitrate)
+                self._audio_segment.export(dir, format="mp3", bitrate=str(params.encoder.bitrate))
             case Encoders.WAV():
                 self._audio_segment.export(dir, format="wav")
             case _:
