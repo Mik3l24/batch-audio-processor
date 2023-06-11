@@ -1,3 +1,5 @@
+import re
+
 import music_tag as music_tag
 
 valid_tags = [
@@ -18,6 +20,8 @@ valid_tags = [
     "year",
     "isrc",
 ]
+
+embedded_tag_pattern = re.compile(r"\{(" + "|".join(valid_tags) + r")}")
 
 
 class FileTags:

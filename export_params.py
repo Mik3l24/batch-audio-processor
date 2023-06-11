@@ -48,6 +48,7 @@ class ExportParameters(QObject):
     target_loudness: Optional[float] = None
     normalize_loudness: bool = True
     cut_silence: bool = False
+    overwrite: bool = True
 
     def __init__(self, parent):
         super().__init__(parent)

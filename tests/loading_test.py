@@ -45,6 +45,7 @@ def testExport():
     params.destination = os.getcwd()+"/audio-dest"
     params.encoder = Encoders.MP3()
     params.organisation = DirOrg.TAGWISE
+    params.tag_pattern = "{album}/{artist}"
     params.target_loudness = -21
     params.normalize_loudness = True
     params.cut_silence = False  # too slow

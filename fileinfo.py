@@ -12,8 +12,10 @@ import pyloudnorm as pyln
 import numpy as np
 import music_tag as tag
 
-from filetags import FileTags
+from filetags import FileTags, embedded_tag_pattern
 from export_params import ExportParameters, valid_extensions, DirOrg, Encoders
+
+OVERWRITE = False
 
 
 class FileInfo(QObject):
@@ -107,12 +109,16 @@ class FileInfo(QObject):
         dir = params.destination
         match params.organisation:
             case DirOrg.RELATIVE:
-                dir += QDir.separator() + self.relative_path
+                if self.relative_path != "":
+                    dir += QDir.separator() + self.relative_path
             case DirOrg.TAGWISE:
-                # Temporary, no parsing of tag pattern
-                dir += QDir.separator() + self.desired_tags.tags["artist"] \
-                       + QDir.separator() + self.desired_tags.tags["album"]
-            # Default and SIMPLE case is absolute
+                pat_dir = params.tag_pattern
+                if pat_dir != "":
+                    # Replace tags embedded within pattern
+                    pat_dir = embedded_tag_pattern.sub(lambda m: self.desired_tags.tags[m.group(1)], pat_dir)
+                    dir += QDir.separator() + pat_dir
+            case DirOrg.SIMPLE:
+                pass
 
         # Get extension
         self.extension = params.encoder.extension
@@ -120,20 +126,22 @@ class FileInfo(QObject):
         # Get export filename
         #   We forgot to add options for naming the file, so we'll just use the original filename
         filename = self.file_info.completeBaseName()
-        if QFileInfo(dir + QDir.separator() + filename).exists():
-            # If the file already exists, we'll just add a number to the end
-            i = 1
-            temp_name = filename
-            while QFileInfo(dir + QDir.separator() + temp_name + "." + self.extension).exists():
-                temp_name = filename + f" ({i})"
-                i += 1
-            filename = temp_name
+        # TODO Fix, not working
+        if not params.overwrite:
+            if QFileInfo(dir + QDir.separator() + filename + self.extension).exists():
+                # If the file already exists, we'll just add a number to the end
+                i = 1
+                temp_name = filename
+                while QFileInfo(dir + QDir.separator() + temp_name + "." + self.extension).exists():
+                    temp_name = filename + f" ({i})"
+                    i += 1
+                filename = temp_name
         dir += QDir.separator() + filename + "." + self.extension
 
         # Create the file
         path = Path(dir)
         path.parent.mkdir(parents=True, exist_ok=True)  # mkdir without parent would create a folder named as the file
-        path.touch(exist_ok=True)
+        path.touch(exist_ok=params.overwrite)  # Don't throw an error if the existing file can be overwritten
 
         # Get export format
         match params.encoder:
