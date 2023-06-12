@@ -28,8 +28,8 @@ def testNormalization():
     assert file.loudness is not None
     file.normalizeLoudness(-21)
     file.measureLoudness()
-    assert isclose(file.loudness, -21, abs_tol=0.5)
     print(file.loudness)
+    assert isclose(file.loudness, -21, abs_tol=0.01)
 
 
 def testExport():
@@ -37,8 +37,8 @@ def testExport():
     file = widget.file_info
     # Change tags
     file.desired_tags.tags["title"] = "cool song"
-    file.desired_tags.tags["artist"] = "artist"
-    file.desired_tags.tags["album"] = "album"
+    file.desired_tags.tags["artist"] = "mike"
+    file.desired_tags.tags["album"] = "collection"
     file.desired_tags.tags["comment"] = "testing testing"
     # Prepare export parameters
     params = ExportParameters(None)
@@ -52,7 +52,7 @@ def testExport():
     # Export
     file.export(params)
     # Test that the file exists
-    assert os.path.isfile(params.destination + "/artist/album/test.mp3")
+    assert os.path.isfile(params.destination + "/collection/mike/test.mp3")
 
     # TODO apparently it exports to mono
 
