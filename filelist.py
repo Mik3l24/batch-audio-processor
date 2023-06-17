@@ -2,6 +2,7 @@ import os
 from PySide6.QtCore import QObject, QDir, QFileInfo, Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QGroupBox, QLabel
 from fileinfo import FileInfo, FileInfoWidget
+from export_params import ExportParametersEditor, ExportParameters
 
 
 class FileList(QObject):
@@ -39,6 +40,32 @@ class FileListWidget(QWidget):
             for filename in qdir.entryList():
                 filepath = qdir.filePath(filename)
                 self._addFileWidget(filepath, "")
+
+    def delete_files(self):
+        for index, file in enumerate(self.file_list.files):
+            if file.is_checked:
+                self.file_list.files.pop(index)
+
+    def check_files(self):
+        for file in self.file_list.files:
+            file.is_checked = True
+
+    def uncheck_files(self):
+        for file in self.file_list.files:
+            file.is_checked = False
+
+    def mes_loud(self):
+        for file in self.file_list.files:
+            if file.is_checked:
+                FileInfo.measureLoudness(file.file_info)
+
+    def exp(self):
+        exx = ExportParametersEditor(self)
+        fp = ExportParameters(self)
+        ExportParameters.setEncoder(fp, exx.formatbox.currentText())
+        for file in self.file_list.files:
+            if file.is_checked:
+                FileInfo.export(file.file_info, fp)
 
     def __init__(self, parent):
         super().__init__(parent)

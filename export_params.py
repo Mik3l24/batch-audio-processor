@@ -107,7 +107,8 @@ class ExportParametersEditor(QWidget):
         self.inparams2_layout = QtWidgets.QHBoxLayout(self)
 
         self.format_label = QtWidgets.QLabel('Format: ')
-        self.formatbox = QtWidgets.QLineEdit(self)
+        self.formatbox = QtWidgets.QComboBox(self)
+        self.formatbox.addItems(_available_encoders)
         self.inparams2_layout.addWidget(self.format_label)
         self.inparams2_layout.addWidget(self.formatbox)
 

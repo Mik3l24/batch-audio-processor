@@ -60,6 +60,11 @@ class ActionBar(QtWidgets.QWidget):
 
         self.button_open.clicked.connect(lambda: self.open_file(flw))
         self.button_open_f.clicked.connect(lambda: self.open_folder(flw))
+        self.button_delete.clicked.connect(lambda: FileListWidget.delete_files(flw))
+        self.button_check.clicked.connect(lambda: FileListWidget.check_files(flw))
+        self.button_uncheck.clicked.connect(lambda: FileListWidget.uncheck_files(flw))
+        self.button_vol_change.clicked.connect(lambda: FileListWidget.mes_loud(flw))
+        self.button_start.clicked.connect(lambda: FileListWidget.exp(flw))
 
     def open_file(self, flist: FileListWidget):
         filename = QtWidgets.QFileDialog.getOpenFileName(self, "Open file",

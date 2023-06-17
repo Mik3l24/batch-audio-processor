@@ -164,6 +164,7 @@ class FileInfo(QObject):
 class FileInfoWidget(QWidget):
     file_info: FileInfo
     selected: bool
+    is_checked: bool = False
 
     def __init__(self, parent, absolute_path, relative_path):
         super().__init__(parent)  # Parent is the FileListWidget or its layout

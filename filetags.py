@@ -6,7 +6,6 @@ valid_tags = [
     "album",
     "albumartist",
     "artist",
-    "artwork",
     "comment",
     "compilation",
     "composer",
