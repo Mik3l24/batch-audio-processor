@@ -60,9 +60,9 @@ class ActionBar(QtWidgets.QWidget):
 
         self.button_open.clicked.connect(lambda: self.open_file(flw))
         self.button_open_f.clicked.connect(lambda: self.open_folder(flw))
-        self.button_delete.clicked.connect(lambda: FileListWidget.delete_files(flw))
-        self.button_check.clicked.connect(lambda: FileListWidget.check_files(flw))
-        self.button_uncheck.clicked.connect(lambda: FileListWidget.uncheck_files(flw))
+        self.button_delete.clicked.connect(lambda: self.delete_files(flw))
+        self.button_check.clicked.connect(lambda: self.check_files(flw))
+        self.button_uncheck.clicked.connect(lambda: self.uncheck_files(flw))
         self.button_vol_change.clicked.connect(lambda: FileListWidget.mes_loud(flw))
         self.button_start.clicked.connect(lambda: FileListWidget.exp(flw))
 
@@ -77,6 +77,14 @@ class ActionBar(QtWidgets.QWidget):
         #  Najlepiej byłoby rozszerzyć QFileDialog o checkbox, ale osobny popup też może być.
         flist.addFolder(folder)
 
+    def delete_files(self, flist: FileListWidget):
+        flist.delete_files()
+
+    def check_files(self, flist: FileListWidget):
+        flist.check_files()
+
+    def uncheck_files(self, flist: FileListWidget):
+        flist.uncheck_files()
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
