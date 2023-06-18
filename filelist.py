@@ -2,6 +2,7 @@ import os
 from PySide6.QtCore import QObject, QDir, QFileInfo, Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QGroupBox, QLabel
 from fileinfo import FileInfo, FileInfoWidget
+from tag_editor import FileTagsEditor
 from export_params import ExportParametersEditor, ExportParameters
 
 
@@ -25,6 +26,7 @@ class FileListWidget(QWidget):
         if QFileInfo(filepath).isFile():
             widget = self.file_list.addFile(filepath, relative)
             self.file_list_layout.addWidget(widget)
+            self.file_pressed()
 
     def addFile(self, path):
         self._addFileWidget(path)
@@ -45,6 +47,7 @@ class FileListWidget(QWidget):
         for index, file in enumerate(self.file_list.files):
             if file.is_checked:
                 self.file_list.files.pop(index)
+                self.file_list_layout.removeWidget(file)
 
     def check_files(self):
         for file in self.file_list.files:
@@ -59,16 +62,22 @@ class FileListWidget(QWidget):
             if file.is_checked:
                 FileInfo.measureLoudness(file.file_info)
 
-    def exp(self):
-        exx = ExportParametersEditor(self)
+    def exp(self, param):
         fp = ExportParameters(self)
-        ExportParameters.setEncoder(fp, exx.formatbox.currentText())
+        ExportParameters.setEncoder(fp, param.formatbox.currentText())
         for file in self.file_list.files:
             if file.is_checked:
                 FileInfo.export(file.file_info, fp)
 
-    def __init__(self, parent):
+    def file_pressed(self):
+        self.tags.titlebox.insert(self.file_list.files[0].file_info.desired_tags.tags['tracktitle'])
+        self.tags.performerbox.insert(self.file_list.files[0].file_info.desired_tags.tags['artist'])
+        self.tags.albumbox.insert(self.file_list.files[0].file_info.desired_tags.tags['album'])
+        # self.tags.dirbox.insert(os.path.relpath(self.file_list.files[0].file_info.relative_path))
+
+    def __init__(self, parent, tags):
         super().__init__(parent)
+        self.tags = tags
         self.file_list = FileList(self)
 
         self.file_list_layout = QVBoxLayout(self)
@@ -79,5 +88,3 @@ class FileListWidget(QWidget):
         self.file_list_layout.addWidget(self.filelist_label)
 
         self.file_list_group.setLayout(self.file_list_layout)
-        
-

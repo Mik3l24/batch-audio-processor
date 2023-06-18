@@ -49,6 +49,9 @@ class FileTagsEditor(QtWidgets.QWidget):
         self.intags_layout5.addWidget(self.button_a)
         self.intags_layout5.addWidget(self.button_b)
 
+        self.button_a.clicked.connect(lambda: FileTags.updateTags(self.tags, self.tags))
+        self.button_b.clicked.connect(lambda: FileListWidget.file_pressed())
+
         self.tags_layout.addLayout(self.intags_layout1)
         self.tags_layout.addLayout(self.intags_layout2)
         self.tags_layout.addLayout(self.intags_layout3)

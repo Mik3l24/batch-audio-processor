@@ -11,10 +11,10 @@ class MainWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
-        self.file_list_widget = FileListWidget(self)
         self.tags_widget = FileTagsEditor(self)
+        self.file_list_widget = FileListWidget(self, self.tags_widget)
         self.params_widget = ExportParametersEditor(self)
-        self.bar = ActionBar(self, self.file_list_widget)
+        self.bar = ActionBar(self, self.file_list_widget, self.params_widget)
 
         # Setup.
         self.main_layout = QtWidgets.QVBoxLayout(self)
@@ -35,7 +35,7 @@ class MainWidget(QtWidgets.QWidget):
 
 
 class ActionBar(QtWidgets.QWidget):
-    def __init__(self, parent, flw: FileListWidget):
+    def __init__(self, parent, flw: FileListWidget, param):
         super().__init__(parent)
         self.buttons_layout = QtWidgets.QHBoxLayout(self)
         self.button_group = QtWidgets.QGroupBox()
@@ -64,7 +64,7 @@ class ActionBar(QtWidgets.QWidget):
         self.button_check.clicked.connect(lambda: FileListWidget.check_files(flw))
         self.button_uncheck.clicked.connect(lambda: FileListWidget.uncheck_files(flw))
         self.button_vol_change.clicked.connect(lambda: FileListWidget.mes_loud(flw))
-        self.button_start.clicked.connect(lambda: FileListWidget.exp(flw))
+        self.button_start.clicked.connect(lambda: FileListWidget.exp(flw, param))
 
     def open_file(self, flist: FileListWidget):
         filename = QtWidgets.QFileDialog.getOpenFileName(self, "Open file",
