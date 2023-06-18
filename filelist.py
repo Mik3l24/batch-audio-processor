@@ -73,7 +73,7 @@ class FileListWidget(QWidget):
         self.tags.titlebox.insert(self.file_list.files[0].file_info.desired_tags.tags['tracktitle'])
         self.tags.performerbox.insert(self.file_list.files[0].file_info.desired_tags.tags['artist'])
         self.tags.albumbox.insert(self.file_list.files[0].file_info.desired_tags.tags['album'])
-        # self.tags.dirbox.insert(os.path.relpath(self.file_list.files[0].file_info.relative_path))
+        self.tags.dirbox.insert(self.file_list.files[0].file_info.relative_path)
 
     def __init__(self, parent, tags):
         super().__init__(parent)

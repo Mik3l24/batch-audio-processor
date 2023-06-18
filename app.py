@@ -35,7 +35,7 @@ class MainWidget(QtWidgets.QWidget):
 
 
 class ActionBar(QtWidgets.QWidget):
-    def __init__(self, parent, flw: FileListWidget, param):
+    def __init__(self, parent: MainWidget, flw: FileListWidget, param):
         super().__init__(parent)
         self.buttons_layout = QtWidgets.QHBoxLayout(self)
         self.button_group = QtWidgets.QGroupBox()
@@ -60,11 +60,11 @@ class ActionBar(QtWidgets.QWidget):
 
         self.button_open.clicked.connect(lambda: self.open_file(flw))
         self.button_open_f.clicked.connect(lambda: self.open_folder(flw))
-        self.button_delete.clicked.connect(lambda: FileListWidget.delete_files(flw))
-        self.button_check.clicked.connect(lambda: FileListWidget.check_files(flw))
-        self.button_uncheck.clicked.connect(lambda: FileListWidget.uncheck_files(flw))
-        self.button_vol_change.clicked.connect(lambda: FileListWidget.mes_loud(flw))
-        self.button_start.clicked.connect(lambda: FileListWidget.exp(flw, param))
+        self.button_delete.clicked.connect(lambda: self.parent().file_list_widget.delete_files())
+        self.button_check.clicked.connect(lambda: self.parent().file_list_widget.check_files())
+        self.button_uncheck.clicked.connect(lambda: self.parent().file_list_widget.uncheck_files())
+        self.button_vol_change.clicked.connect(lambda: self.parent().file_list_widget.mes_loud())
+        self.button_start.clicked.connect(lambda: self.parent().file_list_widget.exp(param))
 
     def open_file(self, flist: FileListWidget):
         filename = QtWidgets.QFileDialog.getOpenFileName(self, "Open file",
